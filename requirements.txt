@@ -1,3 +1,6 @@
 Flask
 Flask-MySQLdb
 mysqlclient
+
+Flask
+gunicorn
