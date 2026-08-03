@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Representative Dashboard | CivicConnect</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/my_complaints.css') }}">
+
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+</head>
+<body>
+
+<div class="dashboard">
+
+    <!-- Sidebar -->
+
+    <aside class="sidebar">
+
+        <div class="logo">
+            <i class="fa-solid fa-city"></i>
+            <h2>CivicConnect</h2>
+        </div>
+
+        <ul>
+
+            <li class="active">
+                <a href="/rep_dashboard">
+                    <i class="fa-solid fa-house"></i>
+                    Ward Complaints
+                </a>
+            </li>
+
+            <li>
+                <a href="/rep_logout">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    Logout
+                </a>
+            </li>
+
+        </ul>
+
+    </aside>
+
+    <!-- Main -->
+
+    <main class="main">
+
+        <div class="topbar">
+
+            <div>
+                <h1>Welcome, {{ name }}</h1>
+                <p>Complaints registered in your ward</p>
+            </div>
+
+        </div>
+
+        <!-- Stats -->
+
+        <section class="stats">
+
+            <div class="stat-card">
+                <i class="fa-solid fa-file-circle-plus"></i>
+                <h2>{{ total }}</h2>
+                <p>Total Complaints</p>
+            </div>
+
+            <div class="stat-card">
+                <i class="fa-solid fa-clock"></i>
+                <h2>{{ pending }}</h2>
+                <p>Pending</p>
+            </div>
+
+            <div class="stat-card">
+                <i class="fa-solid fa-circle-check"></i>
+                <h2>{{ resolved }}</h2>
+                <p>Resolved</p>
+            </div>
+
+        </section>
+
+        <!-- Complaints Table -->
+
+        <section class="recent" style="width:100%;">
+
+            <h2>All Ward Complaints</h2>
+
+            <table>
+
+                <tr>
+                    <th>ID</th>
+                    <th>Citizen</th>
+                    <th>Category</th>
+                    <th>Title</th>
+                    <th>Area</th>
+                    <th>Photo</th>
+                    <th>Status</th>
+                    <th>Update</th>
+                </tr>
+
+                {% for c in complaints %}
+                <tr>
+                    <td>#{{ c.complaint_id }}</td>
+                    <td>{{ c.citizen_name }}<br><small>{{ c.citizen_mobile }}</small></td>
+                    <td>{{ c.category }}</td>
+                    <td>{{ c.title }}</td>
+                    <td>{{ c.area }}</td>
+                    <td>
+                        {% if c.image_path %}
+                        <a href="{{ url_for('static', filename=c.image_path) }}" target="_blank">
+                            <img src="{{ url_for('static', filename=c.image_path) }}" alt="photo" style="width:50px; height:50px; object-fit:cover; border-radius:6px;">
+                        </a>
+                        {% else %}
+                        —
+                        {% endif %}
+                        {% if c.work_photo_path %}
+                        <br>
+                        <a href="{{ url_for('static', filename=c.work_photo_path) }}" target="_blank">
+                            <img src="{{ url_for('static', filename=c.work_photo_path) }}" alt="work photo" style="width:50px; height:50px; object-fit:cover; border-radius:6px; margin-top:4px; border:2px solid #198754;">
+                        </a>
+                        {% endif %}
+                    </td>
+                    {% if c.status == 'Resolved' %}
+                    <td class="resolved">{{ c.status }}</td>
+                    {% elif c.status == 'In Progress' %}
+                    <td class="progress">{{ c.status }}</td>
+                    {% elif c.status == 'Rejected' %}
+                    <td class="rejected">{{ c.status }}</td>
+                    {% else %}
+                    <td class="pending">{{ c.status }}</td>
+                    {% endif %}
+                    <td>
+                        <form action="{{ url_for('update_status', complaint_id=c.complaint_id) }}" method="POST" enctype="multipart/form-data" style="display:flex; flex-direction:column; gap:6px; min-width:150px;">
+                            <select name="status" style="padding:6px; border-radius:6px;">
+                                <option value="Pending" {% if c.status=='Pending' %}selected{% endif %}>Pending</option>
+                                <option value="In Progress" {% if c.status=='In Progress' %}selected{% endif %}>In Progress</option>
+                                <option value="Resolved" {% if c.status=='Resolved' %}selected{% endif %}>Resolved</option>
+                                <option value="Rejected" {% if c.status=='Rejected' %}selected{% endif %}>Rejected</option>
+                            </select>
+                            <input type="file" name="work_photo" accept="image/*" style="font-size:11px;" title="Upload work-done photo (optional)">
+                            <button type="submit" style="padding:6px 12px; border:none; border-radius:6px; background:#0d6efd; color:white; cursor:pointer;">
+                                Save
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="8">No complaints registered in your ward yet.</td>
+                </tr>
+                {% endfor %}
+
+            </table>
+
+        </section>
+
+    </main>
+
+</div>
+
+</body>
+</html>

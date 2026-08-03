@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>My Complaints | CivicConnect</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/my_complaints.css') }}">
+
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+</head>
+<body>
+
+<div class="dashboard">
+
+    <!-- Sidebar -->
+
+    <aside class="sidebar">
+
+        <div class="logo">
+            <i class="fa-solid fa-city"></i>
+            <h2>CivicConnect</h2>
+        </div>
+
+        <ul>
+
+            <li>
+                <a href="/dashboard">
+                    <i class="fa-solid fa-house"></i>
+                    Dashboard
+                </a>
+            </li>
+
+            <li>
+                <a href="/complaint">
+                    <i class="fa-solid fa-circle-exclamation"></i>
+                    Register Complaint
+                </a>
+            </li>
+
+            <li class="active">
+                <a href="/my_complaints">
+                    <i class="fa-solid fa-list-check"></i>
+                    My Complaints
+                </a>
+            </li>
+
+            <li>
+                <a href="/announcements">
+                    <i class="fa-solid fa-bullhorn"></i>
+                    Announcements
+                </a>
+            </li>
+
+            <li>
+                <a href="/profile">
+                    <i class="fa-solid fa-user"></i>
+                    My Profile
+                </a>
+            </li>
+
+            <li>
+                <a href="/logout">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    Logout
+                </a>
+            </li>
+
+        </ul>
+
+    </aside>
+
+    <!-- Main -->
+
+    <main class="main">
+
+        <div class="topbar">
+
+            <div>
+                <h1>My Complaints</h1>
+                <p>All complaints you have registered so far</p>
+            </div>
+
+        </div>
+
+        <section class="recent" style="width:100%;">
+
+            <h2>Complaint History</h2>
+
+            <table>
+
+                <tr>
+                    <th>ID</th>
+                    <th>Category</th>
+                    <th>Title</th>
+                    <th>Area</th>
+                    <th>Photo</th>
+                    <th>Status</th>
+                </tr>
+
+                {% for c in complaints %}
+                <tr>
+                    <td>#{{ c.complaint_id }}</td>
+                    <td>{{ c.category }}</td>
+                    <td>{{ c.title }}</td>
+                    <td>{{ c.area }}</td>
+                    <td>
+                        {% if c.image_path %}
+                        <img src="{{ url_for('static', filename=c.image_path) }}" alt="complaint photo" style="width:50px; height:50px; object-fit:cover; border-radius:6px;">
+                        {% else %}
+                        —
+                        {% endif %}
+                        {% if c.work_photo_path %}
+                        <br>
+                        <span style="font-size:11px; color:#198754;">✔ Work photo:</span><br>
+                        <img src="{{ url_for('static', filename=c.work_photo_path) }}" alt="work done photo" style="width:50px; height:50px; object-fit:cover; border-radius:6px; margin-top:4px; border:2px solid #198754;">
+                        {% endif %}
+                    </td>
+                    {% if c.status == 'Resolved' %}
+                    <td class="resolved">{{ c.status }}</td>
+                    {% elif c.status == 'In Progress' %}
+                    <td class="progress">{{ c.status }}</td>
+                    {% elif c.status == 'Rejected' %}
+                    <td class="rejected">{{ c.status }}</td>
+                    {% else %}
+                    <td class="pending">{{ c.status }}</td>
+                    {% endif %}
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="6">You haven't registered any complaints yet.</td>
+                </tr>
+                {% endfor %}
+
+            </table>
+
+        </section>
+
+    </main>
+
+</div>
+
+</body>
+</html>

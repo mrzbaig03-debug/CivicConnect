@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Announcements | CivicConnect</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+</head>
+<body>
+
+<div class="dashboard">
+
+    <!-- Sidebar -->
+
+    <aside class="sidebar">
+
+        <div class="logo">
+            <i class="fa-solid fa-city"></i>
+            <h2>CivicConnect</h2>
+        </div>
+
+        <ul>
+
+            <li>
+                <a href="/dashboard">
+                    <i class="fa-solid fa-house"></i>
+                    Dashboard
+                </a>
+            </li>
+
+            <li>
+                <a href="/complaint">
+                    <i class="fa-solid fa-circle-exclamation"></i>
+                    Register Complaint
+                </a>
+            </li>
+
+            <li>
+                <a href="/my_complaints">
+                    <i class="fa-solid fa-list-check"></i>
+                    My Complaints
+                </a>
+            </li>
+
+            <li class="active">
+                <a href="/announcements">
+                    <i class="fa-solid fa-bullhorn"></i>
+                    Announcements
+                </a>
+            </li>
+
+            <li>
+                <a href="/profile">
+                    <i class="fa-solid fa-user"></i>
+                    My Profile
+                </a>
+            </li>
+
+            <li>
+                <a href="/logout">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    Logout
+                </a>
+            </li>
+
+        </ul>
+
+    </aside>
+
+    <!-- Main -->
+
+    <main class="main">
+
+        <div class="topbar">
+
+            <div>
+                <h1>Announcements</h1>
+                <p>Latest updates from your ward representative</p>
+            </div>
+
+        </div>
+
+        {% if announcements %}
+
+            {% for a in announcements %}
+            <div class="notice-card" style="margin-bottom:20px;">
+
+                <h3>
+                    <i class="fa-solid fa-bullhorn" style="color:#0d6efd; margin-right:8px;"></i>
+                    {{ a.title }}
+                </h3>
+
+                <p>{{ a.description }}</p>
+
+                <p style="margin-top:10px; font-size:13px; color:#888;">
+                    {% if a.ward_number %}
+                    Ward {{ a.ward_number }} •
+                    {% else %}
+                    All Wards •
+                    {% endif %}
+                    Posted by {{ a.posted_by }} •
+                    {{ a.created_at.strftime('%d %b %Y') if a.created_at else '' }}
+                </p>
+
+            </div>
+            {% endfor %}
+
+        {% else %}
+
+        <div class="notice-card">
+            <h3>No announcements yet</h3>
+            <p>Check back later for updates from your ward representative.</p>
+        </div>
+
+        {% endif %}
+
+    </main>
+
+</div>
+
+</body>
+</html>

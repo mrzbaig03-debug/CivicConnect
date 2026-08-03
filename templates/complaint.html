@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Register Complaint | CivicConnect</title>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/complaint.css') }}">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+</head>
+
+<script src="{{ url_for('static', filename='js/chatbot.js') }}"></script>
+
+<body>
+
+<div class="container">
+
+<h1>📢 Register Civic Complaint</h1>
+
+<form method="POST" enctype="multipart/form-data">
+
+    <div class="input-box">
+        <i class="fa-solid fa-list"></i>
+        <select name="category" required>
+            <option value="">Select Complaint Category</option>
+            <option {% if selected_category == 'Road Damage' %}selected{% endif %}>Road Damage</option>
+            <option {% if selected_category == 'Garbage' %}selected{% endif %}>Garbage</option>
+            <option {% if selected_category == 'Water Leakage' %}selected{% endif %}>Water Leakage</option>
+            <option {% if selected_category == 'Drainage' %}selected{% endif %}>Drainage</option>
+            <option {% if selected_category == 'Street Light' %}selected{% endif %}>Street Light</option>
+            <option {% if selected_category == 'Electricity' %}selected{% endif %}>Electricity</option>
+            <option {% if selected_category == 'Other' %}selected{% endif %}>Other</option>
+        </select>
+    </div>
+
+    <div class="input-box">
+        <i class="fa-solid fa-heading"></i>
+        <input
+            type="text"
+            name="title"
+            placeholder="Complaint Title"
+            required>
+    </div>
+
+    <div class="input-box">
+        <i class="fa-solid fa-align-left"></i>
+        <textarea
+            name="description"
+            rows="5"
+            placeholder="Describe your complaint..."
+            required></textarea>
+    </div>
+
+    <div class="input-box">
+        <i class="fa-solid fa-location-dot"></i>
+        <input
+            type="text"
+            name="area"
+            id="areaInput"
+            list="areaSuggestions"
+            placeholder="Start typing your area (e.g. Rahmat Nagar)"
+            required
+            autocomplete="off">
+        <datalist id="areaSuggestions">
+            {% for item in area_ward_map %}
+            <option value="{{ item.area }}">
+            {% endfor %}
+        </datalist>
+    </div>
+
+    <div class="input-box">
+        <i class="fa-solid fa-map"></i>
+        <select name="ward_no" id="wardSelect" required>
+            <option value="">Select Your Ward</option>
+            {% for w in wards %}
+            <option value="{{ w.ward_number }}">Ward {{ w.ward_number }} - {{ w.ward_name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="input-box">
+        <i class="fa-solid fa-image"></i>
+        <input
+            type="file"
+            name="image"
+            id="imageInput"
+            accept="image/*">
+    </div>
+
+    <div id="imagePreviewBox" style="display:none; text-align:center; margin-bottom:20px;">
+        <img id="imagePreview" src="" alt="Preview" style="max-width:150px; border-radius:12px; box-shadow:0 5px 15px rgba(0,0,0,.2);">
+    </div>
+
+    <button type="submit">
+        Submit Complaint
+    </button>
+
+</form>
+
+</div>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    // Data passed from Flask backend, used by complaint.js
+    window.AREA_WARD_MAP = {{ area_ward_map | tojson }};
+    window.COMPLAINT_ERROR = {{ error | tojson if error else 'null' }};
+</script>
+
+<script src="{{ url_for('static', filename='js/complaint.js') }}"></script>
+
+</body>
+
+</html>

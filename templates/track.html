@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Track Complaint | CivicConnect</title>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/track.css') }}">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+</head>
+
+<script src="{{ url_for('static', filename='js/chatbot.js') }}"></script>
+
+<body>
+
+<div class="track-container">
+
+<h1>Track Your Complaint</h1>
+
+<p>Enter your Complaint ID below</p>
+
+<form method="GET" action="/track">
+
+<input type="text" name="complaint_id" value="{{ complaint_id }}" placeholder="Complaint ID (Example: 5)">
+
+<button type="submit">Track Complaint</button>
+
+</form>
+
+{% if searched %}
+
+    {% if complaint %}
+
+    <div class="status-card">
+
+        <h2>Complaint Status</h2>
+
+        <p><strong>Complaint ID:</strong> #{{ complaint.complaint_id }}</p>
+
+        <p><strong>Category:</strong> {{ complaint.category }}</p>
+
+        <p><strong>Title:</strong> {{ complaint.title }}</p>
+
+        <p><strong>Area:</strong> {{ complaint.area }}</p>
+
+        <p><strong>Ward:</strong> Ward {{ complaint.ward_number }}</p>
+
+        <p><strong>Registered By:</strong> {{ complaint.citizen_name }}</p>
+
+        {% if representative %}
+        <p><strong>Representative:</strong> {{ representative.full_name }}</p>
+        {% else %}
+        <p><strong>Representative:</strong> Not assigned yet</p>
+        {% endif %}
+
+        {% if complaint.image_path %}
+        <p><strong>Photo:</strong></p>
+        <img src="{{ url_for('static', filename=complaint.image_path) }}" alt="complaint photo" style="width:120px; border-radius:8px; margin-bottom:10px;">
+        {% endif %}
+
+        <p><strong>Status:</strong>
+        {% if complaint.status == 'Resolved' %}
+        <span class="pending" style="background:#198754;">{{ complaint.status }}</span>
+        {% elif complaint.status == 'In Progress' %}
+        <span class="pending" style="background:#0d6efd;">{{ complaint.status }}</span>
+        {% elif complaint.status == 'Rejected' %}
+        <span class="pending" style="background:#dc3545;">{{ complaint.status }}</span>
+        {% else %}
+        <span class="pending">{{ complaint.status }}</span>
+        {% endif %}
+        </p>
+
+    </div>
+
+    {% else %}
+
+    <div class="status-card">
+        <p>❌ No complaint found with ID <strong>#{{ complaint_id }}</strong>. Please check the ID and try again.</p>
+    </div>
+
+    {% endif %}
+
+{% endif %}
+
+</div>
+
+</body>
+
+</html>

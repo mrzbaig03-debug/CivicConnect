@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Dashboard | CivicConnect</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+</head>
+
+<script src="{{ url_for('static', filename='js/chatbot.js') }}"></script>
+
+<body>
+
+<div class="dashboard">
+
+    <!-- Sidebar -->
+
+    <aside class="sidebar">
+
+        <div class="logo">
+
+            <i class="fa-solid fa-city"></i>
+
+            <h2>CivicConnect</h2>
+
+        </div>
+
+        <ul>
+
+            <li class="active">
+                <a href="/dashboard">
+                    <i class="fa-solid fa-house"></i>
+                    Dashboard
+                </a>
+            </li>
+
+            <li>
+                <a href="/complaint">
+                    <i class="fa-solid fa-circle-exclamation"></i>
+                    Register Complaint
+                </a>
+            </li>
+
+            <li>
+                <a href="/my_complaints">
+                    <i class="fa-solid fa-list-check"></i>
+                    My Complaints
+                </a>
+            </li>
+
+            <li>
+                <a href="/announcements">
+                    <i class="fa-solid fa-bullhorn"></i>
+                    Announcements
+                </a>
+            </li>
+
+            <li>
+                <a href="/profile">
+                    <i class="fa-solid fa-user"></i>
+                    My Profile
+                </a>
+            </li>
+
+            <li>
+                <a href="/logout">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    Logout
+                </a>
+            </li>
+
+        </ul>
+
+    </aside>
+
+    <!-- Main -->
+
+    <main class="main">
+
+        <!-- Top Bar -->
+
+        <div class="topbar">
+
+            <div>
+
+                <h1>Citizen Dashboard</h1>
+
+                <p>Welcome back to CivicConnect</p>
+
+            </div>
+
+            <div class="profile">
+
+                <i class="fa-solid fa-user-circle"></i>
+
+                <span>{{ name }}</span>
+
+            </div>
+
+        </div>
+
+        <!-- Welcome -->
+
+        <section class="welcome">
+
+            <div>
+
+                <h2>👋 Welcome Back, {{ name }}</h2>
+
+                <p>
+                    Manage complaints, track progress and stay updated with
+                    announcements from your ward representatives.
+                </p>
+
+            </div>
+
+        </section>
+
+        <!-- Statistics -->
+
+        <section class="stats">
+
+            <div class="stat-card">
+
+                <i class="fa-solid fa-file-circle-plus"></i>
+
+                <h2>{{ total_complaints }}</h2>
+
+                <p>Total Complaints</p>
+
+            </div>
+
+            <div class="stat-card">
+
+                <i class="fa-solid fa-circle-check"></i>
+
+                <h2>{{ resolved_complaints }}</h2>
+
+                <p>Resolved</p>
+
+            </div>
+
+            <div class="stat-card">
+
+                <i class="fa-solid fa-clock"></i>
+
+                <h2>{{ pending_complaints }}</h2>
+
+                <p>Pending</p>
+
+            </div>
+
+            <div class="stat-card">
+
+                <i class="fa-solid fa-bullhorn"></i>
+
+                <h2>0</h2>
+
+                <p>Announcements</p>
+
+            </div>
+
+        </section>
+
+        <!-- Quick Actions -->
+
+        <section class="actions">
+
+            <div class="action-card">
+
+                <i class="fa-solid fa-circle-exclamation"></i>
+
+                <h3>Register Complaint</h3>
+
+                <a href="/complaint">Open</a>
+
+            </div>
+
+            <div class="action-card">
+
+                <i class="fa-solid fa-list-check"></i>
+
+                <h3>My Complaints</h3>
+
+                <a href="/my_complaints">View</a>
+
+            </div>
+
+            <div class="action-card">
+
+                <i class="fa-solid fa-user"></i>
+
+                <h3>Profile</h3>
+
+                <a href="/profile">Open</a>
+
+            </div>
+
+            <div class="action-card">
+
+                <i class="fa-solid fa-location-dot"></i>
+
+                <h3>Ward Details</h3>
+
+                <a href="/wards">View</a>
+
+            </div>
+
+        </section>
+
+        <!-- Bottom -->
+
+        <section class="bottom">
+
+            <div class="recent">
+
+                <h2>Recent Complaints</h2>
+
+                <table>
+
+                    <tr>
+                        <th>ID</th>
+                        <th>Complaint</th>
+                        <th>Status</th>
+                    </tr>
+
+                    {% for c in recent_complaints %}
+                    <tr>
+                        <td>#{{ c.complaint_id }}</td>
+                        <td>{{ c.title }}</td>
+                        {% if c.status == 'Resolved' %}
+                        <td class="resolved">{{ c.status }}</td>
+                        {% elif c.status == 'In Progress' %}
+                        <td class="progress">{{ c.status }}</td>
+                        {% else %}
+                        <td class="pending">{{ c.status }}</td>
+                        {% endif %}
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="3">No complaints registered yet.</td>
+                    </tr>
+                    {% endfor %}
+
+                </table>
+
+            </div>
+
+            <div class="notice">
+
+                <h2>Latest Announcement</h2>
+
+                <div class="notice-card">
+
+                    <h3>No announcements yet</h3>
+
+                    <p>
+                        Check back later for updates from your ward representative.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+<script>
+    window.COMPLAINT_SUBMITTED = {{ 'true' if request.args.get('submitted') else 'false' }};
+</script>
+
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+
+</body>
+</html>

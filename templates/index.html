@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>CivicConnect | Smart Civic Complaint System</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+</head>
+
+<body>
+
+<!-- ================= NAVBAR ================= -->
+
+<header class="navbar">
+
+    <div class="logo">
+        <i class="fa-solid fa-city"></i>
+        CivicConnect
+    </div>
+
+    <nav>
+
+        <a href="/">Home</a>
+
+        <a href="/services">Services</a>
+
+        <a href="/about">About</a>
+
+        <a href="/wards">Wards</a>
+
+        <a href="/representatives">Representatives</a>
+
+        <a href="/track">Track</a>
+
+        <a href="/login">Login</a>
+
+        <a href="/register" class="register-btn">
+            Register
+        </a>
+
+    </nav>
+
+</header>
+
+<!-- ================= HERO SECTION ================= -->
+
+<section class="hero">
+
+
+    <div class="hero-text">
+        
+
+        <h1>
+
+            Smart Civic Complaint
+            <br>
+            & Citizen Engagement System
+
+        </h1>
+
+        <p>
+
+            Report road damage, garbage,
+            drainage, street lights,
+            water leakage and many
+            other civic issues directly
+            to your ward representative.
+
+        </p>
+
+        <div class="buttons">
+
+            <a href="/login" class="btn-green">
+
+                Citizen Login
+
+            </a>
+
+            <a href="/rep_login" class="btn-orange">
+
+                Representative Login
+
+            </a>
+        </div>
+
+    </div>
+
+    <div class="hero-image">
+
+        <i class="fa-solid fa-city city-icon"></i>
+
+    </div>
+
+</section>
+
+
+
+<!-- ================= STATISTICS ================= -->
+
+<section class="stats">
+
+    <div class="stat-card">
+
+        <h2>1200+</h2>
+
+        <p>Total Complaints</p>
+
+    </div>
+
+    <div class="stat-card">
+
+        <h2>980+</h2>
+
+        <p>Resolved Complaints</p>
+
+    </div>
+
+    <div class="stat-card">
+
+        <h2>2</h2>
+
+        <p>Total Wards</p>
+
+    </div>
+
+    <div class="stat-card">
+
+        <h2>8</h2>
+
+        <p>Representatives</p>
+
+    </div>
+
+</section>
+
+<!-- ======= PART 2 STARTS FROM HERE ======= -->
+
+<!-- ================= SERVICES ================= -->
+
+<section class="services" id="services">
+
+    <h2>Complaint Categories</h2>
+
+    <p style="text-align:center; margin-bottom:15px; color:#666;">
+        Click a category to register a complaint directly.
+    </p>
+
+    <div class="service-container">
+
+        <a href="/complaint?category=Road+Damage" class="service-card">
+            <i class="fa-solid fa-road"></i>
+            <h3>Road Damage</h3>
+            <p>Report potholes and damaged roads.</p>
+        </a>
+
+        <a href="/complaint?category=Garbage" class="service-card">
+            <i class="fa-solid fa-trash"></i>
+            <h3>Garbage</h3>
+            <p>Report garbage collection issues.</p>
+        </a>
+
+        <a href="/complaint?category=Water+Leakage" class="service-card">
+            <i class="fa-solid fa-faucet-drip"></i>
+            <h3>Water Leakage</h3>
+            <p>Report pipeline leakage.</p>
+        </a>
+
+        <a href="/complaint?category=Street+Light" class="service-card">
+            <i class="fa-solid fa-lightbulb"></i>
+            <h3>Street Light</h3>
+            <p>Report damaged street lights.</p>
+        </a>
+
+        <a href="/complaint?category=Drainage" class="service-card">
+            <i class="fa-solid fa-water"></i>
+            <h3>Drainage</h3>
+            <p>Report drainage blockage.</p>
+        </a>
+
+        <a href="/complaint?category=Other" class="service-card">
+            <i class="fa-solid fa-circle-exclamation"></i>
+            <h3>Other Complaint</h3>
+            <p>Report any other civic issue.</p>
+        </a>
+
+    </div>
+
+</section>
+
+<!-- ================= HOW IT WORKS ================= -->
+
+<section class="work">
+
+    <h2>How It Works</h2>
+
+    <div class="work-container">
+
+        <div class="work-card">
+            <i class="fa-solid fa-user-plus"></i>
+            <h3>Register</h3>
+            <p>Create your account.</p>
+        </div>
+
+        <div class="work-card">
+            <i class="fa-solid fa-camera"></i>
+            <h3>Upload Photo</h3>
+            <p>Upload complaint image.</p>
+        </div>
+
+        <div class="work-card">
+            <i class="fa-solid fa-location-dot"></i>
+            <h3>Select Ward</h3>
+            <p>Choose your ward area.</p>
+        </div>
+
+        <div class="work-card">
+            <i class="fa-solid fa-paper-plane"></i>
+            <h3>Submit</h3>
+            <p>Complaint reaches representative.</p>
+        </div>
+
+        <div class="work-card">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <h3>Track</h3>
+            <p>Track complaint status anytime.</p>
+        </div>
+
+    </div>
+
+</section>
+
+<!-- ================= FOOTER ================= -->
+
+<footer class="footer">
+
+    <div class="footer-container">
+
+        <div class="footer-box">
+            <h2>CivicConnect</h2>
+            <p>
+                Smart Civic Complaint and Citizen Engagement System.
+                Connecting Citizens with Ward Representatives.
+            </p>
+        </div>
+
+        <div class="footer-box">
+            <h3>Quick Links</h3>
+            <a href="/">Home</a>
+            <a href="#services">Services</a>
+            <a href="#wards">Wards</a>
+            <a href="/track">Track Complaint</a>
+            <a href="/login">Login</a>
+        </div>
+
+        <div class="footer-box">
+            <h3>Complaint Categories</h3>
+            <a href="/complaint?category=Road+Damage">Road Damage</a>
+            <a href="/complaint?category=Garbage">Garbage</a>
+            <a href="/complaint?category=Water+Leakage">Water Leakage</a>
+            <a href="/complaint?category=Street+Light">Street Light</a>
+            <a href="/complaint?category=Drainage">Drainage</a>
+        </div>
+
+        <div class="footer-box">
+            <h3>Contact</h3>
+            <p><i class="fa-solid fa-location-dot"></i> Nanded, Maharashtra</p>
+            <p><i class="fa-solid fa-phone"></i> +91 9876543210</p>
+            <p><i class="fa-solid fa-envelope"></i> civicconnect@gmail.com</p>
+        </div>
+
+    </div>
+
+    <hr>
+
+    <div class="copyright">
+        © 2026 CivicConnect | Developed by Mirza Bismillah Baig
+    </div>
+
+</footer>
+
+<script src="{{ url_for('static', filename='js/chatbot.js') }}"></script>
+
+</body>
+</html>

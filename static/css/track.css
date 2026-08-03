@@ -1,0 +1,299 @@
+ /* =========================
+   Google Font
+========================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+/* ================= TRACK PAGE ================= */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+/* =========================
+   Background (matches site's blue theme)
+========================= */
+
+body{
+
+    min-height:100vh;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    background:linear-gradient(135deg,#0d6efd,#3b82f6,#00c6ff);
+
+    background-size:200% 200%;
+
+    animation:bgMove 10s ease infinite;
+
+    padding:40px;
+
+}
+
+@keyframes bgMove{
+
+    0%{
+        background-position:0% 50%;
+    }
+
+    50%{
+        background-position:100% 50%;
+    }
+
+    100%{
+        background-position:0% 50%;
+    }
+
+}
+
+/* =========================
+   Main Card (white, matches site cards)
+========================= */
+
+.track-container{
+
+    width:100%;
+    max-width:650px;
+
+    background:#ffffff;
+
+    padding:40px;
+
+    border-radius:20px;
+
+    box-shadow:0 20px 45px rgba(0,0,0,.25);
+
+    animation:popup .8s ease;
+
+}
+
+@keyframes popup{
+
+    from{
+        opacity:0;
+        transform:translateY(40px);
+    }
+
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+
+}
+
+.track-container h1{
+
+    text-align:center;
+
+    margin-bottom:10px;
+
+    font-weight:700;
+
+    background:linear-gradient(90deg,
+    #ff9a00,
+    #ff5f6d,
+    #ffc371,
+    #ff9a00);
+
+    background-size:300% auto;
+
+    -webkit-background-clip:text;
+
+    background-clip:text;
+
+    -webkit-text-fill-color:transparent;
+
+    animation:textGlow 4s linear infinite;
+
+}
+
+@keyframes textGlow{
+
+    0%{
+        background-position:0% 50%;
+    }
+
+    100%{
+        background-position:300% 50%;
+    }
+
+}
+
+.track-container p{
+
+    text-align:center;
+
+    margin-bottom:20px;
+
+    color:#555;
+
+}
+
+/* =========================
+   Input + Button
+========================= */
+
+input{
+
+    width:100%;
+
+    padding:15px 18px;
+
+    border:none;
+
+    outline:none;
+
+    border-radius:14px;
+
+    margin-bottom:20px;
+
+    font-size:16px;
+
+    background:#f1f4f9;
+
+    transition:.3s;
+
+}
+
+input:focus{
+
+    box-shadow:0 0 0 4px rgba(13,110,253,.20);
+
+    transform:translateY(-2px);
+
+}
+
+button{
+
+    width:100%;
+
+    padding:15px;
+
+    border:none;
+
+    border-radius:14px;
+
+    background:linear-gradient(135deg,#0d6efd,#00c6ff);
+
+    color:white;
+
+    font-size:17px;
+
+    font-weight:600;
+
+    cursor:pointer;
+
+    letter-spacing:.5px;
+
+    transition:.35s;
+
+    box-shadow:0 10px 25px rgba(13,110,253,.35);
+
+}
+
+button:hover{
+
+    transform:translateY(-4px);
+
+    background:linear-gradient(135deg,#00c6ff,#0d6efd);
+
+    box-shadow:0 15px 35px rgba(0,198,255,.45);
+
+}
+
+button:active{
+
+    transform:scale(.98);
+
+}
+
+/* =========================
+   Status Card
+========================= */
+
+.status-card{
+
+    margin-top:30px;
+
+    padding:25px;
+
+    background:#f8fafc;
+
+    border-radius:16px;
+
+    border-left:6px solid #0d6efd;
+
+    animation:popup .6s ease;
+
+}
+
+.status-card h2{
+
+    margin-bottom:18px;
+
+    color:#0d6efd;
+
+}
+
+.status-card p{
+
+    text-align:left;
+
+    margin-bottom:12px;
+
+    color:#333;
+
+}
+
+.status-card strong{
+
+    color:#111;
+
+}
+
+/* =========================
+   Status Pill
+========================= */
+
+.pending{
+
+    display:inline-block;
+
+    background:#f59e0b;
+
+    padding:6px 16px;
+
+    color:white;
+
+    border-radius:20px;
+
+    font-weight:600;
+
+    font-size:14px;
+
+}
+
+/* =========================
+   Responsive
+========================= */
+
+@media(max-width:600px){
+
+    body{
+        padding:20px;
+    }
+
+    .track-container{
+        padding:25px;
+    }
+
+    .track-container h1{
+        font-size:26px;
+    }
+
+}

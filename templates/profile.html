@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>My Profile | CivicConnect</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+</head>
+<body>
+
+<div class="dashboard">
+
+    <!-- Sidebar -->
+
+    <aside class="sidebar">
+
+        <div class="logo">
+            <i class="fa-solid fa-city"></i>
+            <h2>CivicConnect</h2>
+        </div>
+
+        <ul>
+
+            <li>
+                <a href="/dashboard">
+                    <i class="fa-solid fa-house"></i>
+                    Dashboard
+                </a>
+            </li>
+
+            <li>
+                <a href="/complaint">
+                    <i class="fa-solid fa-circle-exclamation"></i>
+                    Register Complaint
+                </a>
+            </li>
+
+            <li>
+                <a href="/my_complaints">
+                    <i class="fa-solid fa-list-check"></i>
+                    My Complaints
+                </a>
+            </li>
+
+            <li>
+                <a href="/announcements">
+                    <i class="fa-solid fa-bullhorn"></i>
+                    Announcements
+                </a>
+            </li>
+
+            <li class="active">
+                <a href="/profile">
+                    <i class="fa-solid fa-user"></i>
+                    My Profile
+                </a>
+            </li>
+
+            <li>
+                <a href="/logout">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    Logout
+                </a>
+            </li>
+
+        </ul>
+
+    </aside>
+
+    <!-- Main -->
+
+    <main class="main">
+
+        <div class="topbar">
+
+            <div>
+                <h1>My Profile</h1>
+                <p>Your account information</p>
+            </div>
+
+        </div>
+
+        <section class="recent" style="width:100%; max-width:600px;">
+
+            <h2>Account Details</h2>
+
+            {% if user %}
+
+            <table>
+
+                <tr>
+                    <td style="text-align:left; font-weight:600;">Full Name</td>
+                    <td style="text-align:left;">{{ user.full_name }}</td>
+                </tr>
+
+                <tr>
+                    <td style="text-align:left; font-weight:600;">Email</td>
+                    <td style="text-align:left;">{{ user.email }}</td>
+                </tr>
+
+                <tr>
+                    <td style="text-align:left; font-weight:600;">Mobile</td>
+                    <td style="text-align:left;">{{ user.mobile }}</td>
+                </tr>
+
+                <tr>
+                    <td style="text-align:left; font-weight:600;">Area</td>
+                    <td style="text-align:left;">{{ user.area }}</td>
+                </tr>
+
+                <tr>
+                    <td style="text-align:left; font-weight:600;">Ward Number</td>
+                    <td style="text-align:left;">{{ user.ward_no }}</td>
+                </tr>
+
+                <tr>
+                    <td style="text-align:left; font-weight:600;">Member Since</td>
+                    <td style="text-align:left;">{{ user.created_at.strftime('%d %b %Y') if user.created_at else '-' }}</td>
+                </tr>
+
+            </table>
+
+            {% else %}
+
+            <p>Unable to load profile details.</p>
+
+            {% endif %}
+
+        </section>
+
+    </main>
+
+</div>
+
+</body>
+</html>

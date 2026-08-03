@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Register | CivicConnect</title>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/register.css') }}">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+</head>
+
+<script src="{{ url_for('static', filename='js/chatbot.js') }}"></script>
+
+<body>
+
+<div class="register-container">
+
+<div class="register-box">
+
+<h1>Create Account</h1>
+
+<p>Citizen Registration</p>
+
+<form action="/register" method="POST">
+
+<div class="input-box">
+<i class="fa-solid fa-user"></i>
+<input type="text" name="full_name" placeholder="Full Name" required>
+</div>
+
+<div class="input-box">
+<i class="fa-solid fa-envelope"></i>
+<input type="email" name="email" placeholder="Email" required>
+</div>
+
+<div class="input-box">
+<i class="fa-solid fa-phone"></i>
+<input type="text" name="mobile" placeholder="Mobile Number" required>
+</div>
+
+<div class="input-box">
+<i class="fa-solid fa-location-dot"></i>
+<input type="text" name="area" placeholder="Area" required>
+</div>
+
+<div class="input-box">
+<i class="fa-solid fa-hashtag"></i>
+<input type="number" name="ward_no" placeholder="Ward Number" required>
+</div>
+
+<div class="input-box">
+<i class="fa-solid fa-lock"></i>
+<input type="password" name="password" placeholder="Password" required>
+</div>
+
+<div class="input-box">
+<i class="fa-solid fa-lock"></i>
+<input type="password" name="confirm_password" placeholder="Confirm Password" required>
+</div>
+
+<button type="submit">Create Account</button>
+
+</form>
+
+<a href="/login">Already have an account? Login</a>
+
+</div>
+
+</div>
+
+</body>
+</html>

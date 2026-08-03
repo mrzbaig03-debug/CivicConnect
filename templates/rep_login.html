@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Representative Login | CivicConnect</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+</head>
+
+<script src="{{ url_for('static', filename='js/chatbot.js') }}"></script>
+
+<body>
+
+<div class="login-container">
+
+    <div class="login-box">
+
+        <h1>CivicConnect</h1>
+
+        <p>Representative Login</p>
+
+        <form action="/rep_login" method="POST">
+
+            <div class="input-box">
+                <i class="fa-solid fa-user-tie"></i>
+                <select id="repSelect" style="border:none; outline:none; width:100%; font-size:16px; background:transparent;">
+                    <option value="">Select Your Name</option>
+                    {% for rep in representatives %}
+                    <option value="{{ rep.email }}">{{ rep.full_name }} (Ward {{ rep.ward_number }})</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="input-box">
+                <i class="fa-solid fa-envelope"></i>
+                <input
+                    type="email"
+                    name="email"
+                    id="emailInput"
+                    placeholder="Email"
+                    required>
+            </div>
+
+            <div class="input-box">
+                <i class="fa-solid fa-lock"></i>
+                <input
+                    type="password"
+                    name="password"
+                    placeholder="Password"
+                    required>
+            </div>
+
+            <button type="submit">Login</button>
+
+        </form>
+
+        <a href="/login">Citizen Login</a>
+
+    </div>
+
+</div>
+
+<script src="{{ url_for('static', filename='js/rep_login.js') }}"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Services | CivicConnect</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+</head>
+
+<script src="{{ url_for('static', filename='js/chatbot.js') }}"></script>
+
+<body>
+
+<!-- ================= NAVBAR ================= -->
+
+<header class="navbar">
+
+    <div class="logo">
+        <i class="fa-solid fa-city"></i>
+        CivicConnect
+    </div>
+
+    <nav>
+
+        <a href="/">Home</a>
+
+        <a href="/services">Services</a>
+
+        <a href="/about">About</a>
+
+        <a href="/wards">Wards</a>
+
+        <a href="/representatives">Representatives</a>
+
+        <a href="/track">Track</a>
+
+        <a href="/login">Login</a>
+
+        <a href="/register" class="register-btn">
+            Register
+        </a>
+
+    </nav>
+
+</header>
+
+<!-- ================= HERO ================= -->
+
+<section class="page-hero">
+
+    <h1>Citizen Services</h1>
+
+    <p>
+
+        CivicConnect provides digital civic services that help citizens
+        report public issues directly to their ward representatives.
+
+    </p>
+
+</section>
+
+<!-- ================= SERVICES ================= -->
+
+<section class="services-page">
+
+    <h2>Complaint Categories</h2>
+
+    <p class="services-subtitle">
+
+        Select the category that matches your civic issue.
+
+    </p>
+
+    <div class="service-container">
+
+        <div class="service-card">
+
+            <i class="fa-solid fa-road"></i>
+
+            <h3>Road Damage</h3>
+
+            <p>Report damaged roads and potholes.</p>
+
+        </div>
+
+        <div class="service-card">
+
+            <i class="fa-solid fa-trash"></i>
+
+            <h3>Garbage</h3>
+
+            <p>Report garbage collection issues.</p>
+
+        </div>
+
+        <div class="service-card">
+
+            <i class="fa-solid fa-faucet-drip"></i>
+
+            <h3>Water Leakage</h3>
+
+            <p>Report water leakage problems.</p>
+
+        </div>
+
+        <div class="service-card">
+
+            <i class="fa-solid fa-lightbulb"></i>
+
+            <h3>Street Lights</h3>
+
+            <p>Report damaged street lights.</p>
+
+        </div>
+
+        <div class="service-card">
+
+            <i class="fa-solid fa-water"></i>
+
+            <h3>Drainage</h3>
+
+            <p>Report drainage blockage.</p>
+
+        </div>
+
+        <div class="service-card">
+
+            <i class="fa-solid fa-circle-exclamation"></i>
+
+            <h3>Other Issues</h3>
+
+            <p>Report any other civic problem.</p>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- ================= SERVICE PROCESS ================= -->
+
+<section class="work">
+
+    <h2>Complaint Process</h2>
+
+    <div class="work-container">
+
+        <div class="work-card">
+            <i class="fa-solid fa-user"></i>
+            <h3>Login</h3>
+            <p>Login using your CivicConnect account.</p>
+        </div>
+
+        <div class="work-card">
+            <i class="fa-solid fa-file-circle-plus"></i>
+            <h3>Register Complaint</h3>
+            <p>Fill in the complaint details and upload a photo.</p>
+        </div>
+
+        <div class="work-card">
+            <i class="fa-solid fa-share-from-square"></i>
+            <h3>Forwarded</h3>
+            <p>Your complaint is sent to the concerned representative.</p>
+        </div>
+
+        <div class="work-card">
+            <i class="fa-solid fa-list-check"></i>
+            <h3>Status Update</h3>
+            <p>Representative updates the complaint status.</p>
+        </div>
+
+        <div class="work-card">
+            <i class="fa-solid fa-circle-check"></i>
+            <h3>Resolved</h3>
+            <p>Track your complaint until it is resolved.</p>
+        </div>
+
+    </div>
+
+</section>
+
+<!-- ================= FOOTER ================= -->
+
+<footer class="footer">
+
+    <div class="footer-container">
+
+        <div class="footer-box">
+
+            <h2>CivicConnect</h2>
+
+            <p>
+
+                Smart Civic Complaint and Citizen Engagement System.
+
+            </p>
+
+        </div>
+
+        <div class="footer-box">
+
+            <h3>Quick Links</h3>
+
+            <a href="/">Home</a>
+
+            <a href="/about">About</a>
+
+            <a href="/track">Track</a>
+
+            <a href="/login">Login</a>
+
+        </div>
+
+    </div>
+
+    <hr>
+
+    <div class="copyright">
+
+        © 2026 CivicConnect | Developed by Mirza Bismillah Baig
+
+    </div>
+
+</footer>
+
+</body>
+</html>
