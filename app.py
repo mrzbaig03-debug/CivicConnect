@@ -11,14 +11,52 @@ import mysql.connector
 import os
 from werkzeug.utils import secure_filename
 import uuid
+import smtplib
+from email.mime.text import MIMEText
+
+from dotenv import load_dotenv #add
 
 app = Flask(__name__)
+load_dotenv() #add
 
 # ==========================================
 # Secret Key
 # ==========================================
 
 app.secret_key = "civicconnect_secret_key"
+
+# ==========================================
+# Email Config (Gmail SMTP)
+# ==========================================
+# IMPORTANT: Use a Gmail "App Password", NOT your normal
+# Gmail login password. Steps to generate one:
+# 1. Go to myaccount.google.com/security
+# 2. Turn on 2-Step Verification (if not already on)
+# 3. Search "App Passwords" -> create one for "Mail"
+# 4. Paste that 16-character password below
+
+EMAIL_ADDRESS = "EMAIL_ADDRESS"
+EMAIL_APP_PASSWORD = "EMAIL_APP_PASSWORD"
+
+
+def send_email(to_email, subject, body):
+    """Send a simple text email. Fails silently (prints error)
+    so a broken email config never crashes the app."""
+
+    try:
+        msg = MIMEText(body)
+        msg["Subject"] = subject
+        msg["From"] = EMAIL_ADDRESS
+        msg["To"] = to_email
+
+        with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
+            server.login(EMAIL_ADDRESS, EMAIL_APP_PASSWORD)
+            server.sendmail(EMAIL_ADDRESS, to_email, msg.as_string())
+
+        print(f"✅ Email sent to {to_email}")
+
+    except Exception as e:
+        print(f"❌ Email failed to send: {e}")
 
 # ==========================================
 # File Upload Config
@@ -43,10 +81,10 @@ def allowed_file(filename):
 # ==========================================
 
 db = mysql.connector.connect(
-    host="localhost",
-    user="root",
-    password="mirza1234",
-    database="civicconnect"
+    host=os.getenv("MYSQL_HOST"),
+    user=os.getenv("MYSQL_USER"),
+    password=os.getenv("MYSQL_PASSWORD"),
+    database=os.getenv("MYSQL_DATABASE")
 )
 
 # Ensures the app always sees the latest committed data
@@ -673,6 +711,7 @@ def rep_dashboard():
             c.image_path,
             c.work_photo_path,
             c.status,
+            c.created_at,
             u.full_name AS citizen_name,
             u.mobile AS citizen_mobile
         FROM complaints c
@@ -749,6 +788,36 @@ def update_status(complaint_id):
         )
 
     db.commit()
+
+    # ---------------------------------------------
+    # Notify citizen by email if complaint is Resolved
+    # ---------------------------------------------
+
+    if new_status == "Resolved":
+
+        cursor.execute(
+            """
+            SELECT u.email, u.full_name, c.title
+            FROM complaints c
+            JOIN users u ON c.user_id = u.user_id
+            WHERE c.complaint_id = %s
+            """,
+            (complaint_id,)
+        )
+        citizen = cursor.fetchone()
+
+        if citizen and citizen["email"]:
+            send_email(
+                to_email=citizen["email"],
+                subject=f"Your complaint #{complaint_id} has been Resolved - CivicConnect",
+                body=(
+                    f"Hi {citizen['full_name']},\n\n"
+                    f"Good news! Your complaint \"{citizen['title']}\" (ID #{complaint_id}) "
+                    f"has been marked as Resolved by your ward representative.\n\n"
+                    f"Thank you for using CivicConnect to make your city better.\n\n"
+                    f"- CivicConnect Team"
+                )
+            )
 
     return redirect(url_for("rep_dashboard"))
 
