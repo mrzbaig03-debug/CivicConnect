@@ -1,4 +1,4 @@
-Flask
-Flask-MySQLdb
-mysqlclient
+flask
 mysql-connector-python
+werkzeug
+python-dotenv
