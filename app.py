@@ -13,17 +13,19 @@ from werkzeug.utils import secure_filename
 import uuid
 import smtplib
 from email.mime.text import MIMEText
+import re
 
-from dotenv import load_dotenv #add
+from dotenv import load_dotenv
+
+load_dotenv()
 
 app = Flask(__name__)
-load_dotenv() #add
 
 # ==========================================
 # Secret Key
 # ==========================================
 
-app.secret_key = "civicconnect_secret_key"
+app.secret_key = os.getenv("FLASK_SECRET_KEY", "fallback_dev_key_change_me")
 
 # ==========================================
 # Email Config (Gmail SMTP)
@@ -35,8 +37,8 @@ app.secret_key = "civicconnect_secret_key"
 # 3. Search "App Passwords" -> create one for "Mail"
 # 4. Paste that 16-character password below
 
-EMAIL_ADDRESS = "EMAIL_ADDRESS"
-EMAIL_APP_PASSWORD = "EMAIL_APP_PASSWORD"
+EMAIL_ADDRESS = os.getenv("EMAIL_ADDRESS")
+EMAIL_APP_PASSWORD = os.getenv("EMAIL_APP_PASSWORD")
 
 
 def send_email(to_email, subject, body):
@@ -160,6 +162,22 @@ def representatives():
 # Register
 # ==========================================
 
+def get_ward_dropdown_data():
+    """Fetch ward list + flat area->ward map, used by both
+    the complaint form and the registration form."""
+
+    cursor.execute("SELECT ward_id, ward_number, ward_name, area_name FROM wards ORDER BY ward_number")
+    ward_list = cursor.fetchall()
+
+    area_ward_map = []
+    for w in ward_list:
+        areas = [a.strip() for a in w["area_name"].split(",")]
+        for area in areas:
+            area_ward_map.append({"area": area, "ward_number": w["ward_number"]})
+
+    return ward_list, area_ward_map
+
+
 @app.route("/register", methods=["GET", "POST"])
 def register():
 
@@ -173,6 +191,36 @@ def register():
         password = request.form["password"]
         confirm_password = request.form.get("confirm_password", "")
 
+        ward_list, area_ward_map = get_ward_dropdown_data()
+
+        # ---------------------------------------------
+        # 0a. Mobile number must be exactly 10 digits
+        # ---------------------------------------------
+
+        if not re.fullmatch(r"\d{10}", mobile):
+            return render_template(
+                "register.html",
+                wards=ward_list,
+                area_ward_map=area_ward_map,
+                error="Mobile number must be exactly 10 digits (numbers only)."
+            )
+
+        # ---------------------------------------------
+        # 0b. Strong password check:
+        # min 8 chars, at least 1 uppercase, 1 lowercase,
+        # 1 digit, 1 special character
+        # ---------------------------------------------
+
+        strong_password_pattern = r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#^()_+\-=]).{8,}$"
+
+        if not re.match(strong_password_pattern, password):
+            return render_template(
+                "register.html",
+                wards=ward_list,
+                area_ward_map=area_ward_map,
+                error="Password must be at least 8 characters and include an uppercase letter, a lowercase letter, a number, and a special character (e.g. Rahmat@123)."
+            )
+
         # ---------------------------------------------
         # 1. Passwords must match
         # ---------------------------------------------
@@ -180,6 +228,8 @@ def register():
         if password != confirm_password:
             return render_template(
                 "register.html",
+                wards=ward_list,
+                area_ward_map=area_ward_map,
                 error="Passwords do not match. Please try again."
             )
 
@@ -193,11 +243,15 @@ def register():
         if existing_user:
             return render_template(
                 "register.html",
+                wards=ward_list,
+                area_ward_map=area_ward_map,
                 error="This email is already registered. Please login instead."
             )
 
         # ---------------------------------------------
         # 3. Ward number must be a valid, existing ward
+        # (also blocks negative/garbage numbers since they
+        # simply won't match any real ward_number)
         # ---------------------------------------------
 
         cursor.execute("SELECT ward_id FROM wards WHERE ward_number=%s", (ward_no,))
@@ -206,7 +260,9 @@ def register():
         if not valid_ward:
             return render_template(
                 "register.html",
-                error="Invalid Ward Number. Please enter a valid ward (e.g. 11 or 12)."
+                wards=ward_list,
+                area_ward_map=area_ward_map,
+                error="Invalid Ward Number. Please select a valid ward from the list."
             )
 
         sql = """
@@ -237,7 +293,13 @@ def register():
 
         return redirect(url_for("login"))
 
-    return render_template("register.html")
+    ward_list, area_ward_map = get_ward_dropdown_data()
+
+    return render_template(
+        "register.html",
+        wards=ward_list,
+        area_ward_map=area_ward_map
+    )
 
 
 # ==========================================
@@ -361,12 +423,32 @@ def complaint():
         ward_no = request.form["ward_no"]
 
         # ---------------------------------------------
-        # ward_no (ward number entered by user) is NOT
-        # the same as wards.ward_id (auto-increment PK).
-        # complaints.ward_id is a foreign key to
-        # wards.ward_id, so we must look up the correct
-        # ward_id using ward_number first.
+        # A citizen can only file complaints for their
+        # OWN registered ward (set at registration time),
+        # not any other ward.
         # ---------------------------------------------
+
+        if str(ward_no) != str(session.get("ward_no")):
+
+            cursor.execute(
+                "SELECT ward_id, ward_number, ward_name, area_name FROM wards WHERE ward_number=%s",
+                (session.get("ward_no"),)
+            )
+            own_ward_list = cursor.fetchall()
+
+            area_ward_map = []
+            for w in own_ward_list:
+                areas = [a.strip() for a in w["area_name"].split(",")]
+                for a in areas:
+                    area_ward_map.append({"area": a, "ward_number": w["ward_number"]})
+
+            return render_template(
+                "complaint.html",
+                wards=own_ward_list,
+                selected_category=category,
+                area_ward_map=area_ward_map,
+                error="You can only submit complaints for your own registered ward."
+            )
 
         cursor.execute(
             "SELECT ward_id FROM wards WHERE ward_number = %s",
@@ -377,7 +459,7 @@ def complaint():
 
         if not ward_row:
 
-            cursor.execute("SELECT ward_id, ward_number, ward_name, area_name FROM wards ORDER BY ward_number")
+            cursor.execute("SELECT ward_id, ward_number, ward_name, area_name FROM wards WHERE ward_number=%s", (session.get("ward_no"),))
             ward_list = cursor.fetchall()
 
             area_ward_map = []
@@ -396,23 +478,12 @@ def complaint():
 
         ward_id = ward_row["ward_id"]
 
-        # ---------------------------------------------
-        # Auto-assign the correct representative based on
-        # the citizen's specific area (not just the ward),
-        # so each complaint reaches only the representative
-        # responsible for that area.
-        # ---------------------------------------------
-
         cursor.execute(
             "SELECT rep_id FROM representatives WHERE ward_id=%s AND LOWER(TRIM(area))=LOWER(TRIM(%s))",
             (ward_id, area)
         )
         rep_row = cursor.fetchone()
         rep_id = rep_row["rep_id"] if rep_row else None
-
-        # ---------------------------------------------
-        # Handle optional image upload
-        # ---------------------------------------------
 
         image_path = None
 
@@ -429,7 +500,6 @@ def complaint():
                 save_path = os.path.join(app.config["UPLOAD_FOLDER"], safe_name)
                 image_file.save(save_path)
 
-                # Path stored in DB, used with url_for('static', filename=...)
                 image_path = f"uploads/{safe_name}"
 
         sql = """
@@ -468,12 +538,12 @@ def complaint():
 
         return redirect(url_for("dashboard", submitted=1))
 
-    # GET request — load ward list for dropdown
-    cursor.execute("SELECT ward_id, ward_number, ward_name, area_name FROM wards ORDER BY ward_number")
+    cursor.execute(
+        "SELECT ward_id, ward_number, ward_name, area_name FROM wards WHERE ward_number=%s",
+        (session.get("ward_no"),)
+    )
     ward_list = cursor.fetchall()
 
-    # Build a flat list of areas + which ward each belongs to,
-    # so the frontend can auto-suggest area and auto-select ward.
     area_ward_map = []
 
     for w in ward_list:
@@ -484,7 +554,6 @@ def complaint():
                 "ward_number": w["ward_number"]
             })
 
-    # Pre-fill category if it was passed from homepage/services cards
     selected_category = request.args.get("category", "")
 
     return render_template(
@@ -529,10 +598,6 @@ def my_complaints():
 @app.route("/announcements")
 def announcements():
 
-    # Show announcements relevant to the logged-in user's ward,
-    # plus any general announcements (ward_id is NULL).
-    # If not logged in, show all announcements.
-
     if "user_id" in session:
 
         cursor.execute(
@@ -564,7 +629,7 @@ def announcements():
 
 
 # ==========================================
-# Profile
+# Track
 # ==========================================
 
 @app.route("/track", methods=["GET"])
@@ -622,6 +687,12 @@ def track():
         representative=representative,
         complaint_id=complaint_id
     )
+
+
+# ==========================================
+# Profile
+# ==========================================
+
 @app.route("/profile")
 def profile():
 
@@ -669,7 +740,6 @@ def rep_login():
 
         return "❌ Invalid Email or Password"
 
-    # GET request — load representative list for dropdown
     cursor.execute(
         """
         SELECT r.rep_id, r.full_name, r.email, w.ward_number
@@ -696,10 +766,6 @@ def rep_dashboard():
     rep_id = session["rep_id"]
     ward_id = session["rep_ward_id"]
 
-    # Complaints assigned specifically to this representative
-    # (based on area match at submission time), plus any
-    # ward complaints that couldn't be matched to a specific
-    # area/representative (rep_id IS NULL) so nothing gets lost.
     cursor.execute(
         """
         SELECT
@@ -725,7 +791,6 @@ def rep_dashboard():
 
     complaints = cursor.fetchall()
 
-    # Quick stats
     total = len(complaints)
     pending = len([c for c in complaints if c["status"] == "Pending"])
     resolved = len([c for c in complaints if c["status"] == "Resolved"])
@@ -752,10 +817,6 @@ def update_status(complaint_id):
 
     new_status = request.form["status"]
 
-    # ---------------------------------------------
-    # Handle optional "work done" photo upload
-    # ---------------------------------------------
-
     work_photo_file = request.files.get("work_photo")
     work_photo_path = None
 
@@ -772,10 +833,6 @@ def update_status(complaint_id):
 
             work_photo_path = f"uploads/{safe_name}"
 
-    # Only allow updating complaints that belong to this rep's ward.
-    # Also auto-claim the complaint (assign rep_id) if it wasn't
-    # matched to a specific representative at submission time.
-
     if work_photo_path:
         cursor.execute(
             "UPDATE complaints SET status=%s, work_photo_path=%s, rep_id=COALESCE(rep_id, %s) WHERE complaint_id=%s AND ward_id=%s",
@@ -788,10 +845,6 @@ def update_status(complaint_id):
         )
 
     db.commit()
-
-    # ---------------------------------------------
-    # Notify citizen by email if complaint is Resolved
-    # ---------------------------------------------
 
     if new_status == "Resolved":
 

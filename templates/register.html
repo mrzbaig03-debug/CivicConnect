@@ -15,8 +15,6 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
 
 </head>
 
-<script src="{{ url_for('static', filename='js/chatbot.js') }}"></script>
-
 <body>
 
 <div class="register-container">
@@ -26,6 +24,12 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
 <h1>Create Account</h1>
 
 <p>Citizen Registration</p>
+
+{% if error %}
+<p style="background:#fde8e8; color:#c0392b; padding:10px 14px; border-radius:8px; margin-bottom:15px; text-align:center; font-size:14px;">
+    {{ error }}
+</p>
+{% endif %}
 
 <form action="/register" method="POST">
 
@@ -41,7 +45,7 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
 
 <div class="input-box">
 <i class="fa-solid fa-phone"></i>
-<input type="text" name="mobile" placeholder="Mobile Number" required>
+<input type="tel" name="mobile" placeholder="Mobile Number (10 digits)" pattern="[0-9]{10}" maxlength="10" inputmode="numeric" title="Enter exactly 10 digits" required>
 </div>
 
 <div class="input-box">
@@ -56,7 +60,7 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
 
 <div class="input-box">
 <i class="fa-solid fa-lock"></i>
-<input type="password" name="password" placeholder="Password" required>
+<input type="password" name="password" placeholder="Password (min 8 chars, A-Z, a-z, 0-9, symbol)" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#^()_+\-=]).{8,}$" title="At least 8 characters, including uppercase, lowercase, number, and special character" required>
 </div>
 
 <div class="input-box">
@@ -73,6 +77,12 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
 </div>
 
 </div>
+
+<script>
+    document.querySelector('input[name="mobile"]').addEventListener('input', function (e) {
+        e.target.value = e.target.value.replace(/[^0-9]/g, '');
+    });
+</script>
 
 </body>
 </html>
